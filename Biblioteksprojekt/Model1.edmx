@@ -1,0 +1,358 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="LibraryDBModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityContainer Name="LibraryDBModelStoreContainer">
+          <EntitySet Name="Author" EntityType="LibraryDBModel.Store.Author" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Book" EntityType="LibraryDBModel.Store.Book" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Book_Copy" EntityType="LibraryDBModel.Store.Book_Copy" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Loan" EntityType="LibraryDBModel.Store.Loan" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Member" EntityType="LibraryDBModel.Store.Member" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Written" EntityType="LibraryDBModel.Store.Written" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_Book_Copy_Book" Association="LibraryDBModel.Store.FK_Book_Copy_Book">
+            <End Role="Book" EntitySet="Book" />
+            <End Role="Book_Copy" EntitySet="Book_Copy" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Loan_Book_Copy" Association="LibraryDBModel.Store.FK_Loan_Book_Copy">
+            <End Role="Book_Copy" EntitySet="Book_Copy" />
+            <End Role="Loan" EntitySet="Loan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Loan_Member" Association="LibraryDBModel.Store.FK_Loan_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Loan" EntitySet="Loan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Written_Author" Association="LibraryDBModel.Store.FK_Written_Author">
+            <End Role="Author" EntitySet="Author" />
+            <End Role="Written" EntitySet="Written" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Written_Book" Association="LibraryDBModel.Store.FK_Written_Book">
+            <End Role="Book" EntitySet="Book" />
+            <End Role="Written" EntitySet="Written" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Author">
+          <Key>
+            <PropertyRef Name="Author_Id" />
+          </Key>
+          <Property Name="Author_Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Author_Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Book">
+          <Key>
+            <PropertyRef Name="Book_Id" />
+          </Key>
+          <Property Name="Book_Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Book_ISBN" Type="nvarchar" Nullable="false" MaxLength="17" />
+          <Property Name="Book_Title" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Book_Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Book_Copy">
+          <Key>
+            <PropertyRef Name="Book_Copy_Id" />
+          </Key>
+          <Property Name="Book_Copy_Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Book_id" Type="int" Nullable="false" />
+          <Property Name="Loaned" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Loan">
+          <Key>
+            <PropertyRef Name="Loan_Time_Of_Loan" />
+            <PropertyRef Name="Loan_Due_Date" />
+            <PropertyRef Name="Book_Copy_Id" />
+            <PropertyRef Name="Member_Id" />
+          </Key>
+          <Property Name="Loan_Time_Of_Loan" Type="datetime" Nullable="false" />
+          <Property Name="Loan_Due_Date" Type="datetime" Nullable="false" />
+          <Property Name="Book_Copy_Id" Type="int" Nullable="false" />
+          <Property Name="Member_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Member">
+          <Key>
+            <PropertyRef Name="Member_Id" />
+          </Key>
+          <Property Name="Member_Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Member_Personal_Id" Type="nvarchar" Nullable="false" MaxLength="10" />
+          <Property Name="Member_Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Member_Email" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Written">
+          <Key>
+            <PropertyRef Name="Book_Id" />
+            <PropertyRef Name="Author_Id" />
+          </Key>
+          <Property Name="Book_Id" Type="int" Nullable="false" />
+          <Property Name="Author_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Book_Copy_Book">
+          <End Role="Book" Type="LibraryDBModel.Store.Book" Multiplicity="1" />
+          <End Role="Book_Copy" Type="LibraryDBModel.Store.Book_Copy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Book">
+              <PropertyRef Name="Book_Id" />
+            </Principal>
+            <Dependent Role="Book_Copy">
+              <PropertyRef Name="Book_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Loan_Book_Copy">
+          <End Role="Book_Copy" Type="LibraryDBModel.Store.Book_Copy" Multiplicity="1" />
+          <End Role="Loan" Type="LibraryDBModel.Store.Loan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Book_Copy">
+              <PropertyRef Name="Book_Copy_Id" />
+            </Principal>
+            <Dependent Role="Loan">
+              <PropertyRef Name="Book_Copy_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Loan_Member">
+          <End Role="Member" Type="LibraryDBModel.Store.Member" Multiplicity="1" />
+          <End Role="Loan" Type="LibraryDBModel.Store.Loan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="Member_Id" />
+            </Principal>
+            <Dependent Role="Loan">
+              <PropertyRef Name="Member_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Written_Author">
+          <End Role="Author" Type="LibraryDBModel.Store.Author" Multiplicity="1" />
+          <End Role="Written" Type="LibraryDBModel.Store.Written" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Author">
+              <PropertyRef Name="Author_Id" />
+            </Principal>
+            <Dependent Role="Written">
+              <PropertyRef Name="Author_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Written_Book">
+          <End Role="Book" Type="LibraryDBModel.Store.Book" Multiplicity="1" />
+          <End Role="Written" Type="LibraryDBModel.Store.Written" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Book">
+              <PropertyRef Name="Book_Id" />
+            </Principal>
+            <Dependent Role="Written">
+              <PropertyRef Name="Book_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="LibraryDBModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityContainer Name="LibraryDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Author" EntityType="LibraryDBModel.Author" />
+          <EntitySet Name="Book" EntityType="LibraryDBModel.Book" />
+          <EntitySet Name="Book_Copy" EntityType="LibraryDBModel.Book_Copy" />
+          <EntitySet Name="Loan" EntityType="LibraryDBModel.Loan" />
+          <EntitySet Name="Member" EntityType="LibraryDBModel.Member" />
+          <AssociationSet Name="FK_Book_Copy_Book" Association="LibraryDBModel.FK_Book_Copy_Book">
+            <End Role="Book" EntitySet="Book" />
+            <End Role="Book_Copy" EntitySet="Book_Copy" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Loan_Book_Copy" Association="LibraryDBModel.FK_Loan_Book_Copy">
+            <End Role="Book_Copy" EntitySet="Book_Copy" />
+            <End Role="Loan" EntitySet="Loan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Loan_Member" Association="LibraryDBModel.FK_Loan_Member">
+            <End Role="Member" EntitySet="Member" />
+            <End Role="Loan" EntitySet="Loan" />
+          </AssociationSet>
+          <AssociationSet Name="Written" Association="LibraryDBModel.Written">
+            <End Role="Author" EntitySet="Author" />
+            <End Role="Book" EntitySet="Book" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Author">
+          <Key>
+            <PropertyRef Name="Author_Id" />
+          </Key>
+          <Property Name="Author_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Author_Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Book" Relationship="LibraryDBModel.Written" FromRole="Author" ToRole="Book" />
+        </EntityType>
+        <EntityType Name="Book">
+          <Key>
+            <PropertyRef Name="Book_Id" />
+          </Key>
+          <Property Name="Book_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Book_ISBN" Type="String" Nullable="false" MaxLength="17" Unicode="true" FixedLength="false" />
+          <Property Name="Book_Title" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Book_Description" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Book_Copy" Relationship="LibraryDBModel.FK_Book_Copy_Book" FromRole="Book" ToRole="Book_Copy" />
+          <NavigationProperty Name="Author" Relationship="LibraryDBModel.Written" FromRole="Book" ToRole="Author" />
+        </EntityType>
+        <EntityType Name="Book_Copy">
+          <Key>
+            <PropertyRef Name="Book_Copy_Id" />
+          </Key>
+          <Property Name="Book_Copy_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Book_id" Type="Int32" Nullable="false" />
+          <Property Name="Loaned" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Book" Relationship="LibraryDBModel.FK_Book_Copy_Book" FromRole="Book_Copy" ToRole="Book" />
+          <NavigationProperty Name="Loan" Relationship="LibraryDBModel.FK_Loan_Book_Copy" FromRole="Book_Copy" ToRole="Loan" />
+        </EntityType>
+        <EntityType Name="Loan">
+          <Key>
+            <PropertyRef Name="Loan_Time_Of_Loan" />
+            <PropertyRef Name="Loan_Due_Date" />
+            <PropertyRef Name="Book_Copy_Id" />
+            <PropertyRef Name="Member_Id" />
+          </Key>
+          <Property Name="Loan_Time_Of_Loan" Type="DateTime" Nullable="false" />
+          <Property Name="Loan_Due_Date" Type="DateTime" Nullable="false" />
+          <Property Name="Book_Copy_Id" Type="Int32" Nullable="false" />
+          <Property Name="Member_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Book_Copy" Relationship="LibraryDBModel.FK_Loan_Book_Copy" FromRole="Loan" ToRole="Book_Copy" />
+          <NavigationProperty Name="Member" Relationship="LibraryDBModel.FK_Loan_Member" FromRole="Loan" ToRole="Member" />
+        </EntityType>
+        <EntityType Name="Member">
+          <Key>
+            <PropertyRef Name="Member_Id" />
+          </Key>
+          <Property Name="Member_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Member_Personal_Id" Type="String" Nullable="false" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="Member_Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="Member_Email" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Loan" Relationship="LibraryDBModel.FK_Loan_Member" FromRole="Member" ToRole="Loan" />
+        </EntityType>
+        <Association Name="FK_Book_Copy_Book">
+          <End Role="Book" Type="LibraryDBModel.Book" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Book_Copy" Type="LibraryDBModel.Book_Copy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Book">
+              <PropertyRef Name="Book_Id" />
+            </Principal>
+            <Dependent Role="Book_Copy">
+              <PropertyRef Name="Book_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Loan_Book_Copy">
+          <End Role="Book_Copy" Type="LibraryDBModel.Book_Copy" Multiplicity="1" />
+          <End Role="Loan" Type="LibraryDBModel.Loan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Book_Copy">
+              <PropertyRef Name="Book_Copy_Id" />
+            </Principal>
+            <Dependent Role="Loan">
+              <PropertyRef Name="Book_Copy_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Loan_Member">
+          <End Role="Member" Type="LibraryDBModel.Member" Multiplicity="1" />
+          <End Role="Loan" Type="LibraryDBModel.Loan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Member">
+              <PropertyRef Name="Member_Id" />
+            </Principal>
+            <Dependent Role="Loan">
+              <PropertyRef Name="Member_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Written">
+          <End Role="Author" Type="LibraryDBModel.Author" Multiplicity="*" />
+          <End Role="Book" Type="LibraryDBModel.Book" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="LibraryDBModelStoreContainer" CdmEntityContainer="LibraryDBEntities">
+          <EntitySetMapping Name="Author"><EntityTypeMapping TypeName="LibraryDBModel.Author"><MappingFragment StoreEntitySet="Author">
+            <ScalarProperty Name="Author_Id" ColumnName="Author_Id" />
+            <ScalarProperty Name="Author_Name" ColumnName="Author_Name" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Book"><EntityTypeMapping TypeName="LibraryDBModel.Book"><MappingFragment StoreEntitySet="Book">
+            <ScalarProperty Name="Book_Id" ColumnName="Book_Id" />
+            <ScalarProperty Name="Book_ISBN" ColumnName="Book_ISBN" />
+            <ScalarProperty Name="Book_Title" ColumnName="Book_Title" />
+            <ScalarProperty Name="Book_Description" ColumnName="Book_Description" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Book_Copy"><EntityTypeMapping TypeName="LibraryDBModel.Book_Copy"><MappingFragment StoreEntitySet="Book_Copy">
+            <ScalarProperty Name="Book_Copy_Id" ColumnName="Book_Copy_Id" />
+            <ScalarProperty Name="Book_id" ColumnName="Book_id" />
+            <ScalarProperty Name="Loaned" ColumnName="Loaned" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Loan"><EntityTypeMapping TypeName="LibraryDBModel.Loan"><MappingFragment StoreEntitySet="Loan">
+            <ScalarProperty Name="Loan_Time_Of_Loan" ColumnName="Loan_Time_Of_Loan" />
+            <ScalarProperty Name="Loan_Due_Date" ColumnName="Loan_Due_Date" />
+            <ScalarProperty Name="Book_Copy_Id" ColumnName="Book_Copy_Id" />
+            <ScalarProperty Name="Member_Id" ColumnName="Member_Id" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <EntitySetMapping Name="Member"><EntityTypeMapping TypeName="LibraryDBModel.Member"><MappingFragment StoreEntitySet="Member">
+            <ScalarProperty Name="Member_Id" ColumnName="Member_Id" />
+            <ScalarProperty Name="Member_Personal_Id" ColumnName="Member_Personal_Id" />
+            <ScalarProperty Name="Member_Name" ColumnName="Member_Name" />
+            <ScalarProperty Name="Member_Email" ColumnName="Member_Email" />
+          </MappingFragment></EntityTypeMapping></EntitySetMapping>
+          <AssociationSetMapping Name="Written" TypeName="LibraryDBModel.Written" StoreEntitySet="Written">
+            <EndProperty Name="Author">
+              <ScalarProperty Name="Author_Id" ColumnName="Author_Id" />
+            </EndProperty>
+            <EndProperty Name="Book">
+              <ScalarProperty Name="Book_Id" ColumnName="Book_Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+      <Diagram Name="Model1">
+        <EntityTypeShape EntityType="LibraryDBModel.Author" Width="1.5" PointX="0.75" PointY="1.25" Height="1.5956835937499998" IsExpanded="true" />
+        <EntityTypeShape EntityType="LibraryDBModel.Book" Width="1.5" PointX="3" PointY="0.875" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="LibraryDBModel.Book_Copy" Width="1.5" PointX="5.25" PointY="1" Height="1.9802864583333326" IsExpanded="true" />
+        <EntityTypeShape EntityType="LibraryDBModel.Loan" Width="1.5" PointX="7.5" PointY="0.875" Height="2.1725878906249996" IsExpanded="true" />
+        <EntityTypeShape EntityType="LibraryDBModel.Member" Width="1.5" PointX="5.25" PointY="5" Height="1.9802864583333335" IsExpanded="true" />
+        <AssociationConnector Association="LibraryDBModel.FK_Book_Copy_Book" ManuallyRouted="false">
+          <ConnectorPoint PointX="4.5" PointY="1.9901432291666663" />
+          <ConnectorPoint PointX="5.25" PointY="1.9901432291666663" />
+        </AssociationConnector>
+        <AssociationConnector Association="LibraryDBModel.FK_Loan_Book_Copy" ManuallyRouted="false">
+          <ConnectorPoint PointX="6.75" PointY="1.9901432291666663" />
+          <ConnectorPoint PointX="7.5" PointY="1.9901432291666663" />
+        </AssociationConnector>
+        <AssociationConnector Association="LibraryDBModel.FK_Loan_Member" ManuallyRouted="false">
+          <ConnectorPoint PointX="6.75" PointY="5.9901432291666667" />
+          <ConnectorPoint PointX="8.25" PointY="5.9901432291666667" />
+          <ConnectorPoint PointX="8.25" PointY="3.0475878906249996" />
+        </AssociationConnector>
+        <AssociationConnector Association="LibraryDBModel.Written" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.25" PointY="2.047841796875" />
+          <ConnectorPoint PointX="3" PointY="2.047841796875" />
+        </AssociationConnector>
+      </Diagram>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

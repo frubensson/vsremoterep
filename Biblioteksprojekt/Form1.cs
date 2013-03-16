@@ -15,7 +15,7 @@ using System.Windows.Forms;
 namespace Biblioteksprojekt
 {
     public partial class Form1 : Form
-    //{ commented out to introduce a build error
+    {
         /// <summary>
         /// Main form that is launched when the application is executed. Contains a monitoring window.
         /// </summary>

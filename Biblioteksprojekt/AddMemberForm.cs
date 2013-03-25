@@ -37,8 +37,19 @@ namespace Biblioteksprojekt
         private void btnAddNewMember_Click(object sender, EventArgs e)
         {
             Member memberToAdd = new Member();
+            
+            //Nytt 2013-03-25: Kontroll som stoppar inmatningen ifall personnummer inte är 10-siffrigt utan bidestreck.
+            if (txtMemberPersonalId.Text.Count() > 10)
+            {
+                MessageBox.Show("Du måste mata in personnummer med 10 siffror utan bindestreck");
+                return;
+            }
+            else 
+            {
+                memberToAdd.Member_Personal_Id = txtMemberPersonalId.Text; //Medlemmen får ett personnummer tilldelat.
+            }
+
             memberToAdd.Member_Name = txtMemberName.Text;
-            memberToAdd.Member_Personal_Id = txtMemberPersonalId.Text;
             memberToAdd.Member_Email = txtEmail.Text;
 
             context.AddMember(memberToAdd);
